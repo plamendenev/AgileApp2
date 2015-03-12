@@ -6,11 +6,7 @@ import java.util.List;
 
 //import com.example.taptap.DBH;
 
-
-
-
-
-
+import java.util.Locale;
 
 import com.aptitudeguru.dashboard.Hint;
 import com.aptitudeguru.dashboard.model.TestModelFavourite;
@@ -470,11 +466,104 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		if (cursor != null)
 			cursor.moveToFirst();
 
-		TestModelQuants quants = new TestModelQuants(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7));
+		TestModelQuants quants = new TestModelQuants(Integer.parseInt(cursor.getString(0)), convertCurrency(cursor.getString(1)), cursor.getString(2), convertCurrency(cursor.getString(3)), convertCurrency(cursor.getString(4)), convertCurrency(cursor.getString(5)), convertCurrency(cursor.getString(6)), cursor.getString(7));
 		// return contact
 		db.close();
 		return quants;
-
+	}
+	
+	//
+	private String convertCurrency(String dbString)
+	{
+		String newString = dbString;
+		
+		String locale = Locale.getDefault().toString();
+		
+		if(locale.equals("en_GB"))
+		{
+			if (dbString.contains("Rs"))
+			{
+				newString = dbString.replace("Rs", "£");
+			}	
+			if (dbString.contains("Rs."))
+			{
+				newString = dbString.replace("Rs.", "£");
+			}	
+			if (dbString.contains("Rs. "))
+			{
+				newString = dbString.replace("Rs. ", "£");
+			}	
+			if (dbString.contains("rupee"))
+			{
+				newString = dbString.replace("rupee", "pounds");
+			}	
+			if (dbString.contains("a rupee"))
+			{
+				newString = dbString.replace("rupee", "pound");
+			}	
+			if (dbString.contains("paise"))
+			{
+				newString = dbString.replace("paise", "pence");
+			}	
+		}
+		
+		if(locale.equals("en_US"))
+		{
+			if (dbString.contains("Rs"))
+			{
+				newString = dbString.replace("Rs", "$");
+			}	
+			if (dbString.contains("Rs."))
+			{
+				newString = dbString.replace("Rs.", "$");
+			}	
+			if (dbString.contains("Rs. "))
+			{
+				newString = dbString.replace("Rs. ", "$");
+			}	
+			if (dbString.contains("rupee"))
+			{
+				newString = dbString.replace("rupee", "dollars");
+			}	
+			if (dbString.contains("a rupee"))
+			{
+				newString = dbString.replace("rupee", "dollar");
+			}	
+			if (dbString.contains("paise"))
+			{
+				newString = dbString.replace("paise", "cent");
+			}	
+		}
+		
+		if(locale.equals("fr_FR"))
+		{
+			if (dbString.contains("Rs"))
+			{
+				newString = dbString.replace("Rs", "€");
+			}	
+			if (dbString.contains("Rs."))
+			{
+				newString = dbString.replace("Rs.", "€");
+			}	
+			if (dbString.contains("Rs. "))
+			{
+				newString = dbString.replace("Rs. ", "€");
+			}	
+			if (dbString.contains("rupee"))
+			{
+				newString = dbString.replace("rupee", "euros");
+			}	
+			if (dbString.contains("a rupee"))
+			{
+				newString = dbString.replace("rupee", "euro");
+			}	
+			if (dbString.contains("paise"))
+			{
+				newString = dbString.replace("paise", "cent");
+			}	
+		}
+		
+		return newString;
 	}
 
 	public TestModelQuants getQuants(int id) {
@@ -802,6 +891,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				TestModelQuants quants = new TestModelQuants();
 				quants.setID(Integer.parseInt(cursor.getString(0)));
 				quants.setQues(cursor.getString(1));
+				
 				quants.setCat(cursor.getString(2));
 				quants.setOption1(cursor.getString(3));
 				quants.setOption2(cursor.getString(4));
@@ -817,7 +907,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.close();			
 		Collections.shuffle(quantsListRandom);
 		return quantsListRandom;
-	}
+	}	
 
 	// Getting All C language
 	public List<TestModelC> getAllC(String cat) {
